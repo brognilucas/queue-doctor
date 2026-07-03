@@ -34,7 +34,7 @@
     }
   },
   "bin": {
-    "queue-doctor": "./dist/cli.js"
+    "queue-doctor": "dist/cli.js"
   },
   "files": [
     "dist",
