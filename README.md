@@ -48,38 +48,39 @@ pnpm dev
 
 ## Publish
 
-Uses **npm Trusted Publishing** (OIDC) — no long-lived `NPM_TOKEN`, no 2FA token dance.
+CI uses **npm Trusted Publishing** (OIDC) — no long-lived token. But Trusted Publishing **cannot create** a package that does not exist yet, and npm **orgs** often block “create package” until a team/package already exists. Skip the org UI for the first publish.
 
-### One-time setup on npmjs.com
+### First publish (once, on your machine)
 
-Trusted Publishing cannot create a brand-new package name. Do this **before** the first CI publish:
+Use your **personal** npm account (not the org). Interactive 2FA/OTP is fine here.
 
-1. On [npmjs.com](https://www.npmjs.com), open your **queue-doctor** org → **Add package** / create package named exactly `queue-doctor` (unscoped).
-2. Open that package → **Settings** → **Trusted Publisher** → **GitHub Actions**.
-3. Fill in exactly:
+```bash
+pnpm install
+pnpm --filter queue-doctor build
+cd packages/core
+npm login          # personal user, complete OTP if asked
+npm publish --access public
+```
+
+That creates unscoped `queue-doctor` under your user. Confirm: https://www.npmjs.com/package/queue-doctor
+
+### Hook up CI (after the package exists)
+
+1. Package page → **Settings** → **Trusted Publisher** → **GitHub Actions**
+2. Exactly:
    - **Organization or user:** `brognilucas`
    - **Repository:** `queue-doctor`
    - **Workflow filename:** `publish.yml`
-4. Save.
+3. Save
 
-If you only created the **org** and not the **package**, CI fails with `404` on `PUT …/queue-doctor`.
+You can transfer the package to the **queue-doctor** org later from package settings if you want; it is optional for `npx queue-doctor`.
+
+### Later releases
+
+1. Bump `version` in `packages/core/package.json`
+2. Commit, tag, and create a GitHub Release, **or** **Actions → Publish to npm** on `main`
 
 Docs: [Trusted publishers](https://docs.npmjs.com/trusted-publishers/).
-
-### Each release
-
-1. Bump `version` in `packages/core/package.json`.
-2. Commit, tag, and create a GitHub Release (e.g. `v0.1.0`), **or** run **Actions → Publish to npm**.
-
-The workflow authenticates with a short-lived OIDC token and publishes with provenance automatically.
-
-Manual publish (local, still needs your npm login):
-
-```bash
-pnpm --filter queue-doctor publish --access public
-```
-
-After publish, anyone can run `npx queue-doctor`.
 
 ## Privacy
 
