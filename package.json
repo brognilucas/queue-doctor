@@ -6,7 +6,7 @@
     "build": "pnpm --filter queue-doctor build && pnpm --filter @queuedoctor/web build",
     "test": "pnpm --filter queue-doctor test",
     "lint": "pnpm --filter @queuedoctor/web lint",
-    "queue-doctor": "node packages/core/dist/cli.cjs"
+    "queue-doctor": "node packages/core/dist/cli.js"
   },
   "engines": {
     "node": ">=18"

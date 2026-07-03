@@ -11,7 +11,7 @@ export default defineConfig([
   },
   {
     entry: { cli: "src/cli.ts" },
-    format: ["cjs"],
+    format: ["esm"],
     sourcemap: true,
     clean: false,
     // Keep yaml external — it ships as a package dependency.

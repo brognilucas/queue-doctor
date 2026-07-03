@@ -52,13 +52,17 @@ Uses **npm Trusted Publishing** (OIDC) — no long-lived `NPM_TOKEN`, no 2FA tok
 
 ### One-time setup on npmjs.com
 
-1. Create the package (or open it if it already exists) under your **queue-doctor** org.
-2. Package → **Settings** → **Trusted Publisher** → **GitHub Actions**.
+Trusted Publishing cannot create a brand-new package name. Do this **before** the first CI publish:
+
+1. On [npmjs.com](https://www.npmjs.com), open your **queue-doctor** org → **Add package** / create package named exactly `queue-doctor` (unscoped).
+2. Open that package → **Settings** → **Trusted Publisher** → **GitHub Actions**.
 3. Fill in exactly:
    - **Organization or user:** `brognilucas`
    - **Repository:** `queue-doctor`
    - **Workflow filename:** `publish.yml`
 4. Save.
+
+If you only created the **org** and not the **package**, CI fails with `404` on `PUT …/queue-doctor`.
 
 Docs: [Trusted publishers](https://docs.npmjs.com/trusted-publishers/).
 

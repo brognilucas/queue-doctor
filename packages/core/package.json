@@ -34,12 +34,16 @@
     }
   },
   "bin": {
-    "queue-doctor": "./dist/cli.cjs"
+    "queue-doctor": "./dist/cli.js"
   },
   "files": [
     "dist",
     "README.md"
   ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "scripts": {
     "build": "tsup",
     "prepare": "tsup",
