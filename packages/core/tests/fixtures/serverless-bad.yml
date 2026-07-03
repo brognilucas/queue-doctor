@@ -1,0 +1,39 @@
+service: orders-api
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  # no tracing, no log format
+
+functions:
+  processOrder:
+    handler: src/process.handler
+    # no explicit timeout
+    events:
+      - sqs:
+          arn: !GetAtt OrdersQueue.Arn
+          batchSize: 10
+  notifySlack:
+    handler: src/notify.handler
+    events:
+      - sns: arn:aws:sns:us-east-1:123456789012:orders
+  ingestUpload:
+    handler: src/ingest.handler
+    timeout: 300
+    events:
+      - s3:
+          bucket: uploads
+  publicApi:
+    handler: src/api.handler
+    events:
+      - httpApi:
+          path: /orders
+          method: post
+
+resources:
+  Resources:
+    OrdersQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        VisibilityTimeout: 5
+    # no alarms, no DLQ

@@ -1,0 +1,62 @@
+{
+  "name": "queue-doctor",
+  "version": "0.1.0",
+  "description": "Serverless production readiness report — DLQs, retries, timeouts, and observability",
+  "license": "MIT",
+  "author": "Lucas Brogni",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lucasbrogni/queue-doctor.git"
+  },
+  "homepage": "https://github.com/lucasbrogni/queue-doctor#readme",
+  "bugs": {
+    "url": "https://github.com/lucasbrogni/queue-doctor/issues"
+  },
+  "keywords": [
+    "serverless",
+    "aws",
+    "lambda",
+    "sqs",
+    "dlq",
+    "production-readiness",
+    "sam",
+    "cloudformation"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "bin": {
+    "queue-doctor": "./dist/cli.cjs"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "prepare": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "pnpm test && pnpm build"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "yaml": "^2.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

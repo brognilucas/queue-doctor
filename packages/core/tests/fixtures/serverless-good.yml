@@ -1,0 +1,48 @@
+service: orders-api
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  tracing:
+    lambda: true
+  logs:
+    lambda:
+      logFormat: JSON
+
+functions:
+  processOrder:
+    handler: src/process.handler
+    timeout: 30
+    reservedConcurrency: 10
+    destinations:
+      onFailure: !GetAtt OrdersDlq.Arn
+    environment:
+      POWERTOOLS_SERVICE_NAME: orders
+    events:
+      - sqs:
+          arn: !GetAtt OrdersQueue.Arn
+          batchSize: 10
+          maximumRetryAttempts: 2
+
+resources:
+  Resources:
+    OrdersQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        VisibilityTimeout: 180
+        RedrivePolicy:
+          deadLetterTargetArn: !GetAtt OrdersDlq.Arn
+          maxReceiveCount: 3
+    OrdersDlq:
+      Type: AWS::SQS::Queue
+    ProcessOrderErrors:
+      Type: AWS::CloudWatch::Alarm
+      Properties:
+        AlarmDescription: Lambda errors
+        Namespace: AWS/Lambda
+        MetricName: Errors
+        Statistic: Sum
+        Period: 60
+        EvaluationPeriods: 1
+        Threshold: 1
+        ComparisonOperator: GreaterThanOrEqualToThreshold
