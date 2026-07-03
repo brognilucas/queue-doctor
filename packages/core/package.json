@@ -6,11 +6,11 @@
   "author": "Lucas Brogni",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lucasbrogni/queue-doctor.git"
+    "url": "git+https://github.com/brognilucas/queue-doctor.git"
   },
-  "homepage": "https://github.com/lucasbrogni/queue-doctor#readme",
+  "homepage": "https://github.com/brognilucas/queue-doctor#readme",
   "bugs": {
-    "url": "https://github.com/lucasbrogni/queue-doctor/issues"
+    "url": "https://github.com/brognilucas/queue-doctor/issues"
   },
   "keywords": [
     "serverless",
