@@ -4,11 +4,6 @@ on:
   release:
     types: [published]
   workflow_dispatch:
-    inputs:
-      tag:
-        description: "Git tag to publish from (e.g. v0.1.0). Leave empty to use the default branch."
-        required: false
-        type: string
 
 concurrency:
   group: npm-publish
@@ -23,12 +18,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.tag || github.event.release.tag_name || github.ref }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        # Version comes from package.json "packageManager" (pnpm@9.15.0).
+        with:
+          # Must match package.json "packageManager" exactly (not "9").
+          version: 9.15.0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
