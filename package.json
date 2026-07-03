@@ -2,10 +2,8 @@
   "name": "queuedoctor",
   "private": true,
   "scripts": {
-    "dev": "pnpm --filter queue-doctor build && pnpm --filter @queuedoctor/web dev",
-    "build": "pnpm --filter queue-doctor build && pnpm --filter @queuedoctor/web build",
+    "build": "pnpm --filter queue-doctor build",
     "test": "pnpm --filter queue-doctor test",
-    "lint": "pnpm --filter @queuedoctor/web lint",
     "queue-doctor": "node packages/core/dist/cli.js"
   },
   "engines": {
