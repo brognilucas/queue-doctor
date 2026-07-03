@@ -48,15 +48,28 @@ pnpm dev
 
 ## Publish
 
-GitHub Actions publishes `queue-doctor` to npm when you **create a GitHub Release**, or via **Actions → Publish to npm → Run workflow**.
+Uses **npm Trusted Publishing** (OIDC) — no long-lived `NPM_TOKEN`, no 2FA token dance.
 
-1. Add repo secret **`NPM_TOKEN`** (npm access token with publish permission).
-2. Bump `version` in `packages/core/package.json`.
-3. Commit, tag, and create a release (e.g. `v0.1.0`), **or** run the workflow manually.
+### One-time setup on npmjs.com
 
-The workflow runs tests, builds, and `pnpm publish --access public --provenance`.
+1. Create the package (or open it if it already exists) under your **queue-doctor** org.
+2. Package → **Settings** → **Trusted Publisher** → **GitHub Actions**.
+3. Fill in exactly:
+   - **Organization or user:** `brognilucas`
+   - **Repository:** `queue-doctor`
+   - **Workflow filename:** `publish.yml`
+4. Save.
 
-Manual publish (local):
+Docs: [Trusted publishers](https://docs.npmjs.com/trusted-publishers/).
+
+### Each release
+
+1. Bump `version` in `packages/core/package.json`.
+2. Commit, tag, and create a GitHub Release (e.g. `v0.1.0`), **or** run **Actions → Publish to npm**.
+
+The workflow authenticates with a short-lived OIDC token and publishes with provenance automatically.
+
+Manual publish (local, still needs your npm login):
 
 ```bash
 pnpm --filter queue-doctor publish --access public

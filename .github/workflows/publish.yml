@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write
+      id-token: write # Required for npm Trusted Publishing (OIDC)
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,9 +34,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          # Node 24 ships npm new enough for Trusted Publishing (needs >= 11.5.1).
+          node-version: 24
           registry-url: https://registry.npmjs.org
           cache: pnpm
+
+      - name: Ensure npm supports Trusted Publishing
+        run: npm install -g npm@latest
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -47,8 +51,17 @@ jobs:
       - name: Build
         run: pnpm --filter queue-doctor build
 
+      # setup-node writes an _authToken placeholder; remove it so npm uses OIDC.
+      - name: Prefer OIDC over token auth
+        run: |
+          for f in .npmrc packages/core/.npmrc "$HOME/.npmrc"; do
+            if [ -f "$f" ]; then
+              sed -i '/_authToken/d' "$f"
+            fi
+          done
+
+      # Use npm publish (not pnpm) so the OIDC trusted-publisher flow runs.
+      # Do not set NODE_AUTH_TOKEN — that forces token auth and skips OIDC.
       - name: Publish queue-doctor
         working-directory: packages/core
-        run: pnpm publish --access public --no-git-checks --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public
